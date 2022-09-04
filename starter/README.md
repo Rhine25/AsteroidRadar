@@ -7,3 +7,5 @@ Use the updated Gradle version in the `~/gradle/wrapper/gradle-wrapper.propertie
 ```
 distributionUrl = https\://services.gradle.org/distributions/gradle-6.1.1-all.zip
 ```
+
+Forked from https://github.com/udacity/nd940-android-kotlin-c2-starter
