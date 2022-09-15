@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.udacity.asteroidradar.network.NasaApi
+import com.udacity.asteroidradar.api.getSeventhDayFormatted
+import com.udacity.asteroidradar.api.getTodayFormatted
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,7 +39,7 @@ class MainViewModel : ViewModel() {
     }
 
      private fun getAsteroids() {
-         NasaApi.retrofitService.getAsteroids("2022-09-05", "2022-09-12").enqueue(object: Callback<String> {
+         NasaApi.retrofitService.getAsteroids(getTodayFormatted(), getSeventhDayFormatted()).enqueue(object: Callback<String> {
              override fun onFailure(call: Call<String>, t: Throwable) {
                  _asteroidsResponse.value = "Failure: ${t.message}"
              }
