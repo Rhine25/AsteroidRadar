@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.detail.PictureOfDay
+import com.udacity.asteroidradar.domain.Asteroid
 import com.udacity.asteroidradar.repository.AsteroidsRepository
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -25,10 +26,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val imageOfTheDay: LiveData<PictureOfDay>
         get() = _imageOfTheDay
 
+    private val _navigateToAsteroid = MutableLiveData<Asteroid>()
+    val navigateToAsteroid: LiveData<Asteroid>
+    get() = _navigateToAsteroid
+
     private val database = getDatabase(application)
     private val asteroidsRepository = AsteroidsRepository(database)
 
-    val asteroids = database.asteroidDao.getAsteroids()
+    val asteroids = asteroidsRepository.asteroids
 
     init {
         getImageOfTheDay()
@@ -54,5 +59,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 _status.value = NasaApiStatus.ERROR
             }
         }
+    }
+
+    fun displayAsteroidDetails(asteroid: Asteroid) {
+        _navigateToAsteroid.value = asteroid
+    }
+
+    fun displayAsteroidDetailsComplete() {
+        _navigateToAsteroid.value = null
     }
 }
