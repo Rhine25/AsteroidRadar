@@ -3,6 +3,7 @@ package com.udacity.asteroidradar.network
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.udacity.asteroidradar.detail.PictureOfDay
 import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -30,7 +31,7 @@ interface NasaApiService {
     fun getAsteroidsAsync(@Query("start_date") startDate: String, @Query("end_date") endDate: String): Deferred<String>
 
     @GET("planetary/apod?api_key=$API_KEY")
-    fun getImageOfTheDayAsync(): Call<String>
+    fun getImageOfTheDayAsync(): Call<PictureOfDay>
 }
 
 object NasaApi {
