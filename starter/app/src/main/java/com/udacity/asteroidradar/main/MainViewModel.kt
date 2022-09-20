@@ -21,6 +21,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val database = getDatabase(application)
     private val asteroidsRepository = AsteroidsRepository(database)
 
+    val asteroids = database.asteroidDao.getAsteroids()
+
     init {
         getImageOfTheDay()
         viewModelScope.launch {
