@@ -13,6 +13,7 @@ import com.udacity.asteroidradar.network.NasaApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.lang.Exception
 
 class AsteroidsRepository(private val database: AsteroidsDatabase) {
     val asteroids: LiveData<List<Asteroid>> =
@@ -22,12 +23,15 @@ class AsteroidsRepository(private val database: AsteroidsDatabase) {
 
     suspend fun refreshAsteroids() {
         withContext(Dispatchers.IO) {
-            val response = NasaApi.retrofitService.getAsteroidsAsync(getTodayFormatted(), getSeventhDayFormatted()).await()
-            val asteroids = parseAsteroidsJsonResult(JSONObject(response))
-            val databaseAsteroids = asteroids.map {
-                it.asDatabaseModel()
-            }.toTypedArray()
-            database.asteroidDao.insertAll(*databaseAsteroids)
+            try {
+                val response = NasaApi.retrofitService.getAsteroidsAsync(getTodayFormatted(), getSeventhDayFormatted()).await()
+                val asteroids = parseAsteroidsJsonResult(JSONObject(response))
+                val databaseAsteroids = asteroids.map {
+                    it.asDatabaseModel()
+                }.toTypedArray()
+                database.asteroidDao.insertAll(*databaseAsteroids)
+            } catch (e: Exception) {
+            }
         }
     }
 }
