@@ -1,6 +1,5 @@
 package com.udacity.asteroidradar.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.api.getSeventhDayFormatted
@@ -17,9 +16,26 @@ import java.lang.Exception
 
 class AsteroidsRepository(private val database: AsteroidsDatabase) {
     val asteroids: LiveData<List<Asteroid>> =
-        Transformations.map(database.asteroidDao.getAsteroids(getTodayFormatted())) {
-        it.asDomainModel()
-    }
+        Transformations.map(database.asteroidDao.getAllAsteroids()) {
+            it.asDomainModel()
+        }
+
+    val weekAsteroids: LiveData<List<Asteroid>> =
+        Transformations.map(
+            database.asteroidDao.getAsteroidsWithDates(
+                getTodayFormatted(),
+                getSeventhDayFormatted()
+            )
+        ) {
+            it.asDomainModel()
+        }
+
+    val todayAsteroids: LiveData<List<Asteroid>> =
+        Transformations.map(
+            database.asteroidDao.getAsteroidsWithDates(getTodayFormatted())
+        ) {
+            it.asDomainModel()
+        }
 
     suspend fun refreshAsteroids() {
         withContext(Dispatchers.IO) {

@@ -6,8 +6,11 @@ import androidx.room.*
 
 @Dao
 interface AsteroidDao {
-    @Query("SELECT * FROM databaseasteroid WHERE closeApproachDate > :fromDate ORDER BY closeApproachDate")
-    fun getAsteroids(fromDate: String): LiveData<List<DatabaseAsteroid>>
+    @Query("SELECT * FROM databaseasteroid ORDER BY closeApproachDate")
+    fun getAllAsteroids(): LiveData<List<DatabaseAsteroid>>
+
+    @Query("SELECT * FROM databaseasteroid WHERE closeApproachDate >= :fromDate AND closeApproachDate <= :toDate ORDER BY closeApproachDate")
+    fun getAsteroidsWithDates(fromDate: String, toDate: String = fromDate): LiveData<List<DatabaseAsteroid>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg asteroids: DatabaseAsteroid)

@@ -5,11 +5,15 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
 import com.udacity.asteroidradar.R
+import com.udacity.asteroidradar.api.getSeventhDayFormatted
+import com.udacity.asteroidradar.api.getTodayFormatted
 import com.udacity.asteroidradar.database.asDomainModel
+import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
@@ -62,6 +66,13 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        viewModel.updateFilter(
+            when (item.itemId) {
+                R.id.show_week_menu -> NasaApiFilter.WEEK
+                R.id.show_today_menu -> NasaApiFilter.TODAY
+                else -> NasaApiFilter.ALL
+            }
+        )
         return true
     }
 }

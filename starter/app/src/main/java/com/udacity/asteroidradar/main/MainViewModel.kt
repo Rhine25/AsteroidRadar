@@ -6,6 +6,9 @@ import com.udacity.asteroidradar.network.NasaApi
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
+import com.udacity.asteroidradar.api.getSeventhDayFormatted
+import com.udacity.asteroidradar.api.getTodayFormatted
+import com.udacity.asteroidradar.database.asDomainModel
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.detail.PictureOfDay
 import com.udacity.asteroidradar.domain.Asteroid
@@ -17,6 +20,7 @@ import retrofit2.Response
 import java.lang.Exception
 
 enum class NasaApiStatus { LOADING, ERROR, DONE }
+enum class NasaApiFilter { ALL, WEEK, TODAY }
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -33,7 +37,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val database = getDatabase(application)
     private val asteroidsRepository = AsteroidsRepository(database)
 
-    val asteroids = asteroidsRepository.asteroids
+    private val asteroidsFilter = MutableLiveData<NasaApiFilter>(NasaApiFilter.TODAY)
+
+    var asteroids =
+        Transformations.switchMap(asteroidsFilter) { filter ->
+            when (filter) {
+                NasaApiFilter.WEEK -> asteroidsRepository.weekAsteroids
+                NasaApiFilter.TODAY -> asteroidsRepository.todayAsteroids
+                else -> asteroidsRepository.asteroids
+            }
+        }
 
     init {
         getImageOfTheDay()
@@ -67,5 +80,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun displayAsteroidDetailsComplete() {
         _navigateToAsteroid.value = null
+    }
+
+    fun updateFilter(filter: NasaApiFilter) {
+        asteroidsFilter.postValue(filter)
     }
 }
